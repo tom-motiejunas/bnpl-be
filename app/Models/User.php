@@ -12,6 +12,9 @@ use Laravel\Passport\HasApiTokens;
  * User
  *
  * @mixin Eloquent
+ *
+ * @property string $email
+ * @property string $password
  */
 class User extends Authenticatable
 {
@@ -21,10 +24,12 @@ class User extends Authenticatable
         'email',
         'password',
     ];
+
     protected $hidden = [
         'password',
         'remember_token',
     ];
+
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
