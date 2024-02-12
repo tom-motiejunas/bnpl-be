@@ -6,7 +6,7 @@ namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateUserRequests extends FormRequest
+class AddPaymentMethodRequest extends FormRequest
 {
     /**
      * @return array<string, string>
@@ -14,8 +14,7 @@ class CreateUserRequests extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:4',
+            'paymentMethodIdentifier' => 'required|string|max:255',
         ];
     }
 
@@ -25,8 +24,7 @@ class CreateUserRequests extends FormRequest
     public function messages(): array
     {
         return [
-            'email.required' => 'Email is required',
-            'password.required' => 'Password is required',
+            'paymentMethodIdentifier' => 'Payment method identifier is required',
         ];
     }
 }
