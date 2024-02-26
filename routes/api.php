@@ -15,7 +15,7 @@ Route::controller(ApiAuthController::class)
 Route::controller(UserPaymentController::class)
     ->middleware('auth:api')
     ->group(static function () {
-        Route::post('/add-payment', 'create');
+        Route::post('/add-payment', 'store');
     });
 
 Route::controller(UserLoanController::class)

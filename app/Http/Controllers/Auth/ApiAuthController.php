@@ -20,6 +20,7 @@ class ApiAuthController extends Controller
         $request['password'] = Hash::make($request->string('password')->trim());
         $request['remember_token'] = Str::random(10);
         $user = User::create($request->toArray());
+        $user->createAsStripeCustomer();
         $token = $user->createToken('API Token')->accessToken;
         $response = ['token' => $token];
 

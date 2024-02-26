@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
 
-./vendor/bin/phpstan analyse
+echo "Running PHPStan"
+./vendor/bin/phpstan analyse --memory-limit 1G
+
+echo "Running Pint"
 ./vendor/bin/pint --test

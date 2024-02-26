@@ -8,7 +8,7 @@ use Illuminate\Http\JsonResponse;
 
 class UserPaymentController extends Controller
 {
-    public function create(AddPaymentMethodRequest $addPaymentMethodRequest): JsonResponse
+    public function store(AddPaymentMethodRequest $addPaymentMethodRequest): JsonResponse
     {
         /** @var User $user */
         $user = $addPaymentMethodRequest->user();
