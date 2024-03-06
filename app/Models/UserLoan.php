@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $total_paid,
  * @property int $instalment,
  * @property int $total_instalments,
+ * @property string $paymentMethodId
  */
 class UserLoan extends Model
 {
@@ -38,6 +39,7 @@ class UserLoan extends Model
         'total_paid',
         'instalment',
         'total_instalments',
+        'paymentMethodId',
     ];
 
     /**

@@ -16,7 +16,10 @@ class UserLoanController extends Controller
         $newUserLoan = $addUserLoanRequest->all();
         $newUserLoan['user_id'] = $user['id'];
         $newUserLoan['next_payment'] = date('Y-m-d', strtotime('+2 weeks'));
-        $newUserLoan['last_payment'] = null;
+        $newUserLoan['paymentMethodId'] = $addUserLoanRequest->string('paymentMethodId');
+        $user->charge(100, $newUserLoan['paymentMethodId']);
+
+        $newUserLoan['last_payment'] = date('Y-m-d');
         UserLoan::create($newUserLoan);
 
         return response()->json(['data' => $newUserLoan, 'response' => 'success']);
