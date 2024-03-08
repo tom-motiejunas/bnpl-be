@@ -30,7 +30,6 @@ class OpenCartController extends Controller
 
         /** @var array<string, float|string|int> $data */
         $data = $response->json();
-
         $data['payments'] = ($this->getFourPaymentsFromTotal((float) $data['total']));
 
         return response()->json($data);

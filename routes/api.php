@@ -14,9 +14,9 @@ Route::controller(ApiAuthController::class)
     });
 
 Route::controller(OpenCartController::class)
+    ->middleware('auth:api')
     ->group(static function () {
-        Route::get('/open-cart/login', 'login');
-        Route::get('/open-cart/get-order/{id}', 'getOrderInfo');
+        Route::get('/get-order/{id}', 'getOrderInfo');
     });
 
 Route::controller(UserPaymentController::class)
@@ -29,5 +29,9 @@ Route::controller(UserPaymentController::class)
 Route::controller(UserLoanController::class)
     ->middleware('auth:api')
     ->group(static function () {
-        Route::post('/add-loan', 'create');
+        Route::post('/confirm-order', 'store');
     });
+
+Route::get('/success-order', static function () {
+    return ['status' => 'success'];
+})->name('order.success');

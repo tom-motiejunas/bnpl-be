@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @mixin Eloquent
  *
  * @property int $user_id
- * @property string $purchase_id,
+ * @property string $order_id,
  * @property DateTime $last_payment,
  * @property DateTime $next_payment,
  * @property int $amount,
@@ -32,23 +32,22 @@ class UserLoan extends Model
 
     protected $fillable = [
         'user_id',
-        'purchase_id',
+        'order_id',
+        'payment_method_id',
         'last_payment',
         'next_payment',
-        'amount',
+        'total',
         'total_paid',
         'instalment',
-        'total_instalments',
-        'paymentMethodId',
+        'total_instalment',
     ];
 
     /**
      * @var array<string, mixed>
      */
     protected $attributes = [
-        'total_paid' => 0,
         'instalment' => 1,
-        'total_instalments' => 4,
+        'total_instalment' => 4,
     ];
 
     /**

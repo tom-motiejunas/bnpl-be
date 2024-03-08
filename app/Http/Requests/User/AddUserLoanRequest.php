@@ -14,8 +14,8 @@ class AddUserLoanRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'purchase_id' => 'required|string|max:255',
-            'amount' => 'required|integer',
+            'payment_method_id' => 'required|string|max:255',
+            'order_id' => 'required|integer',
         ];
     }
 
@@ -25,7 +25,8 @@ class AddUserLoanRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'paymentMethodIdentifier' => 'Payment method identifier is required',
+            'payment_method_id' => 'Payment method identifier is required',
+            'order_id' => 'Order id is required',
         ];
     }
 }

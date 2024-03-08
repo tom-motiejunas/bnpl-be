@@ -10,13 +10,14 @@ return new class extends Migration
     {
         Schema::create('user_loan', static function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('purchase_id');
-            $table->dateTime('last_payment')->nullable();
+            $table->string('order_id');
+            $table->string('payment_method_id');
+            $table->dateTime('last_payment');
             $table->dateTime('next_payment');
-            $table->integer('amount');
-            $table->integer('total_paid');
+            $table->float('total');
+            $table->float('total_paid');
             $table->integer('instalment');
-            $table->integer('total_instalments');
+            $table->integer('total_instalment');
             $table->timestamps();
 
             $table->foreignId('user_id')->constrained();
