@@ -27,9 +27,9 @@ Route::controller(UserPaymentController::class)
     });
 
 Route::controller(UserLoanController::class)
-    ->middleware('auth:api')
     ->group(static function () {
-        Route::post('/confirm-order', 'store');
+        Route::post('/confirm-order', 'store')->middleware('auth:api');
+        Route::get('/order/{id}/is-confirmed', 'isConfirmed');
     });
 
 Route::get('/success-order', static function () {

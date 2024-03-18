@@ -20,19 +20,30 @@ class OpenCartController extends Controller
         return $token;
     }
 
-    public function getOrderInfo(int $orderId): JsonResponse
+    public function getOrderInfo(int $order_id): JsonResponse
     {
         $token = $this->login();
 
         $response = Http::withCookies([
             'OCSESSID' => $token,
-        ], '172.26.0.1')->get('http://172.26.0.1/index.php?route=api/sale/order&order_id='.$orderId);
+        ], '172.26.0.1')->get('http://172.26.0.1/index.php?route=api/sale/order&order_id='.$order_id);
 
         /** @var array<string, float|string|int> $data */
         $data = $response->json();
         $data['payments'] = ($this->getFourPaymentsFromTotal((float) $data['total']));
 
         return response()->json($data);
+    }
+
+    public function confirmOrder(int $order_id): JsonResponse
+    {
+        $token = $this->login();
+
+        $response = Http::withCookies([
+            'OCSESSID' => $token,
+        ], '172.26.0.1')->post('http://172.26.0.1/index.php?route=api/sale/order.submit&order_id='.$order_id);
+
+        return response()->json($response);
     }
 
     /**
@@ -49,7 +60,6 @@ class OpenCartController extends Controller
             } else {
                 $payments[] = round($total / 4, 2);
             }
-
         }
 
         return $payments;

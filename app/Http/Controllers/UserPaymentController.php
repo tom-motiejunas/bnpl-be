@@ -16,11 +16,11 @@ class UserPaymentController extends Controller
         return response()->json($user->paymentMethods());
     }
 
-    public function store(AddPaymentMethodRequest $addPaymentMethodRequest): JsonResponse
+    public function store(AddPaymentMethodRequest $add_payment_method_request): JsonResponse
     {
         /** @var User $user */
-        $user = $addPaymentMethodRequest->user();
-        $user->addPaymentMethod($addPaymentMethodRequest->string('paymentMethodIdentifier'));
+        $user = $add_payment_method_request->user();
+        $user->addPaymentMethod($add_payment_method_request->string('paymentMethodIdentifier'));
 
         return response()->json('success');
     }
