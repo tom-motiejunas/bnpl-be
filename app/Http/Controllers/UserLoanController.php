@@ -6,6 +6,7 @@ use App\Http\Requests\User\AddUserLoanRequest;
 use App\Models\User;
 use App\Models\UserLoan;
 use Illuminate\Http\JsonResponse;
+use Laravel\Cashier\Exceptions\IncompletePayment;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserLoanController extends Controller
@@ -14,6 +15,9 @@ class UserLoanController extends Controller
     {
     }
 
+    /**
+     * @throws IncompletePayment
+     */
     public function store(AddUserLoanRequest $add_user_loan_request): JsonResponse
     {
         /** @var User $user */
@@ -50,5 +54,44 @@ class UserLoanController extends Controller
         }
 
         return response()->json(['is_confirmed' => true]);
+    }
+
+    /**
+     * @throws IncompletePayment
+     */
+    public function collectLoans(): void
+    {
+        $loans_to_collect = UserLoan::where('next_payment', '<=', date('Y-m-d'))->get();
+
+        foreach ($loans_to_collect as $loan) {
+            if ($loan->instalment === $loan->total_instalment) {
+                continue;
+            }
+            /** @var User $user */
+            $user = $loan->user()->first();
+            $amount = $this->getLoanPayment($loan);
+
+            $user->charge((int) ($amount * 100), $loan->payment_method_id, [
+                'return_url' => route('order.success'),
+            ]);
+
+            $loan->update([
+                'instalment' => $loan->instalment + 1,
+                'last_payment' => date('Y-m-d'),
+                'next_payment' => date('Y-m-d', strtotime('+2 weeks')),
+                'total_paid' => $loan->total_paid + $amount,
+            ]);
+        }
+    }
+
+    private function getLoanPayment(UserLoan $loan): float
+    {
+        $total_left = $loan->total - $loan->total_paid;
+
+        if ($loan->instalment - 1 === $loan->total_instalment) {
+            return $total_left;
+        }
+
+        return round($total_left / ($loan->total_instalment - $loan->instalment), 2);
     }
 }

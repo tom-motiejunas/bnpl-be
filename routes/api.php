@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\ApiAuthController;
 use App\Http\Controllers\OpenCartController;
+use App\Http\Controllers\ShopController;
 use App\Http\Controllers\UserLoanController;
 use App\Http\Controllers\UserPaymentController;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,12 @@ Route::controller(UserLoanController::class)
     ->group(static function () {
         Route::post('/confirm-order', 'store')->middleware('auth:api');
         Route::get('/order/{id}/is-confirmed', 'isConfirmed');
+    });
+
+Route::controller(ShopController::class)
+    ->group(static function () {
+        Route::post('/add-shop', 'store');
+        Route::delete('/remove-shop', 'destroy');
     });
 
 Route::get('/success-order', static function () {

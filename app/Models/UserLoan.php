@@ -19,9 +19,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property DateTime $last_payment,
  * @property DateTime $next_payment,
  * @property int $amount,
+ * @property int $total,
  * @property int $total_paid,
  * @property int $instalment,
- * @property int $total_instalments,
+ * @property int $total_instalment,
  * @property string $paymentMethodId
  */
 class UserLoan extends Model
