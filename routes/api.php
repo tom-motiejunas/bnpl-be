@@ -17,7 +17,7 @@ Route::controller(ApiAuthController::class)
 Route::controller(OpenCartController::class)
     ->middleware('auth:api')
     ->group(static function () {
-        Route::get('/get-order/{id}', 'getOrderInfo');
+        Route::get('/get-order/{order_id}/shop/{shop_id}', 'getOrderInfo');
     });
 
 Route::controller(UserPaymentController::class)

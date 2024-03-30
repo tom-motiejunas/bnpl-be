@@ -16,6 +16,7 @@ class AddUserLoanRequest extends FormRequest
         return [
             'payment_method_id' => 'required|string|max:255',
             'order_id' => 'required|integer',
+            'shop_id' => 'required|integer',
         ];
     }
 
@@ -27,6 +28,7 @@ class AddUserLoanRequest extends FormRequest
         return [
             'payment_method_id' => 'Payment method identifier is required',
             'order_id' => 'Order id is required',
+            'shop_id' => 'Shop id is required',
         ];
     }
 }

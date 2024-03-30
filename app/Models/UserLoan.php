@@ -29,7 +29,7 @@ class UserLoan extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $table = 'user_loan';
+    protected $table = 'user_loans';
 
     protected $fillable = [
         'user_id',
@@ -41,6 +41,7 @@ class UserLoan extends Model
         'total_paid',
         'instalment',
         'total_instalment',
+        'shop_id',
     ];
 
     /**
@@ -57,5 +58,13 @@ class UserLoan extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * @return BelongsTo<Shop, UserLoan>
+     */
+    public function shop(): BelongsTo
+    {
+        return $this->belongsTo(Shop::class, 'shop_id');
     }
 }

@@ -2,31 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Shop;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
+use Symfony\Component\HttpFoundation\Response;
 
 class OpenCartController extends Controller
 {
-    public function login(): string
+    public function __construct(protected Shop $shop)
     {
-        $response = Http::asForm()
-            ->post('http://172.26.0.1/index.php?route=api/account/login', [
-                'key' => env('OPEN_CART_KEY'),
-                'username' => 'Default',
-            ]);
-        /** @var string $token */
-        $token = $response['api_token'];
-
-        return $token;
     }
 
-    public function getOrderInfo(int $order_id): JsonResponse
+    public function getOrderInfo(int $order_id, int $shop_id): JsonResponse
     {
-        $token = $this->login();
+        $shop = $this->shop::find($shop_id);
 
-        $response = Http::withCookies([
-            'OCSESSID' => $token,
-        ], '172.26.0.1')->get('http://172.26.0.1/index.php?route=api/sale/order&order_id='.$order_id);
+        if ($shop === null) {
+            return response()->json(null, Response::HTTP_NOT_FOUND);
+        }
+        $api_key = Crypt::decrypt($shop->api_key);
+
+        $response = Http::get('http://172.26.0.1/index.php?bnpl_key='.$api_key.'&route=api/custom.products&order_id='.$order_id);
 
         /** @var array<string, float|string|int> $data */
         $data = $response->json();
@@ -35,13 +32,15 @@ class OpenCartController extends Controller
         return response()->json($data);
     }
 
-    public function confirmOrder(int $order_id): JsonResponse
+    public function confirmOrder(int $order_id, int $shop_id): JsonResponse
     {
-        $token = $this->login();
+        $shop = $this->shop::find($shop_id);
 
-        $response = Http::withCookies([
-            'OCSESSID' => $token,
-        ], '172.26.0.1')->post('http://172.26.0.1/index.php?route=api/sale/order.submit&order_id='.$order_id);
+        if ($shop === null) {
+            return response()->json(null, Response::HTTP_NOT_FOUND);
+        }
+        $api_key = Crypt::decrypt($shop->api_key);
+        $response = Http::post('http://172.26.0.1/index.php?bnpl_key='.$api_key.'&route=api/custom.products&order_id='.$order_id);
 
         return response()->json($response);
     }

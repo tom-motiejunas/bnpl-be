@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Eloquent;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -17,8 +16,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Shop extends Model
 {
-    use HasUuids;
-
     protected $fillable = [
         'shop_id',
         'api_key',

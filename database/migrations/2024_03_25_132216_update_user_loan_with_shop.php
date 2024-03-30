@@ -8,16 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('shops', static function (Blueprint $table) {
-            $table->id();
-            $table->string('api_key', 600);
-            $table->string('domain');
-            $table->timestamps();
+        Schema::table('user_loans', static function (Blueprint $table) {
+            $table->foreignId('shop_id')->constrained();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('shops');
+        Schema::table('user_loans', static function (Blueprint $table) {
+            $table->dropColumn('shop_id');
+        });
     }
 };

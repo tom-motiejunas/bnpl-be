@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('user_loan', static function (Blueprint $table) {
+        Schema::create('user_loans', static function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('order_id');
             $table->string('payment_method_id');
@@ -26,6 +26,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('user_loan');
+        Schema::dropIfExists('user_loans');
     }
 };

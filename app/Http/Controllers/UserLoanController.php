@@ -22,9 +22,10 @@ class UserLoanController extends Controller
     {
         /** @var User $user */
         $user = $add_user_loan_request->user();
-
+        $order_id = $add_user_loan_request->integer('order_id');
+        $shop_id = $add_user_loan_request->integer('shop_id');
         /** @var array<string, float[]> $order */
-        $order = $this->open_cart_controller->getOrderInfo($add_user_loan_request->integer('order_id'))->original;
+        $order = $this->open_cart_controller->getOrderInfo($order_id, $shop_id)->original;
         $first_payment = (int) $order['payments'][0];
 
         $user->charge($first_payment * 100, (string) $add_user_loan_request->string('payment_method_id'), [
@@ -41,7 +42,7 @@ class UserLoanController extends Controller
         $new_user_loan['order_id'] = $add_user_loan_request->integer('order_id');
 
         UserLoan::create($new_user_loan);
-        $this->open_cart_controller->confirmOrder($add_user_loan_request->integer('order_id'));
+        $this->open_cart_controller->confirmOrder($order_id, $shop_id);
 
         return response()->json(['data' => $new_user_loan, 'response' => 'success']);
     }
