@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\User\AddUserLoanRequest;
+use App\Mail\OrderSubmitted;
+use App\Mail\PaymentMade;
 use App\Models\User;
 use App\Models\UserLoan;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Cashier\Exceptions\IncompletePayment;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -41,8 +44,10 @@ class UserLoanController extends Controller
         $new_user_loan['total_paid'] = $first_payment;
         $new_user_loan['order_id'] = $add_user_loan_request->integer('order_id');
 
-        UserLoan::create($new_user_loan);
+        $created_user_loan = UserLoan::create($new_user_loan);
         $this->open_cart_controller->confirmOrder($order_id, $shop_id);
+        Mail::to($user)->send(new OrderSubmitted($order));
+        Mail::to($user)->send(new PaymentMade($created_user_loan, $order['payments']));
 
         return response()->json(['data' => $new_user_loan, 'response' => 'success']);
     }
@@ -62,6 +67,7 @@ class UserLoanController extends Controller
      */
     public function collectLoans(): void
     {
+        /** @var UserLoan[] $loans_to_collect */
         $loans_to_collect = UserLoan::where('next_payment', '<=', date('Y-m-d'))->get();
 
         foreach ($loans_to_collect as $loan) {
@@ -82,6 +88,9 @@ class UserLoanController extends Controller
                 'next_payment' => date('Y-m-d', strtotime('+2 weeks')),
                 'total_paid' => $loan->total_paid + $amount,
             ]);
+            $payments = $this->open_cart_controller->getFourPaymentsFromTotal($loan->total);
+
+            Mail::to($user)->send(new PaymentMade($loan, $payments));
         }
     }
 

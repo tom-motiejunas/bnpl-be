@@ -48,7 +48,7 @@ class OpenCartController extends Controller
     /**
      * @return array<float>
      */
-    private function getFourPaymentsFromTotal(float $total): array
+    public function getFourPaymentsFromTotal(float $total): array
     {
         $payments = [];
 
