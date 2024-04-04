@@ -7,6 +7,7 @@ use App\Mail\OrderSubmitted;
 use App\Mail\PaymentMade;
 use App\Models\User;
 use App\Models\UserLoan;
+use App\Services\OpenCartService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Cashier\Exceptions\IncompletePayment;
@@ -14,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UserLoanController extends Controller
 {
-    public function __construct(protected OpenCartController $open_cart_controller)
+    public function __construct(protected OpenCartService $openCartService)
     {
     }
 
@@ -28,7 +29,7 @@ class UserLoanController extends Controller
         $order_id = $add_user_loan_request->integer('order_id');
         $shop_id = $add_user_loan_request->integer('shop_id');
         /** @var array<string, float[]> $order */
-        $order = $this->open_cart_controller->getOrderInfo($order_id, $shop_id)->original;
+        $order = $this->openCartService->getOrderInfo($order_id, $shop_id);
         $first_payment = (int) $order['payments'][0];
 
         $user->charge($first_payment * 100, (string) $add_user_loan_request->string('payment_method_id'), [
@@ -45,7 +46,7 @@ class UserLoanController extends Controller
         $new_user_loan['order_id'] = $add_user_loan_request->integer('order_id');
 
         $created_user_loan = UserLoan::create($new_user_loan);
-        $this->open_cart_controller->confirmOrder($order_id, $shop_id);
+        $this->openCartService->confirmOrder($order_id, $shop_id);
         Mail::to($user)->send(new OrderSubmitted($order));
         Mail::to($user)->send(new PaymentMade($created_user_loan, $order['payments']));
 
@@ -88,18 +89,22 @@ class UserLoanController extends Controller
                 'next_payment' => date('Y-m-d', strtotime('+2 weeks')),
                 'total_paid' => $loan->total_paid + $amount,
             ]);
-            $payments = $this->open_cart_controller->getFourPaymentsFromTotal($loan->total);
+            $payments = $this->openCartService->getFourPaymentsFromTotal($loan->total);
 
             Mail::to($user)->send(new PaymentMade($loan, $payments));
         }
     }
 
-    private function getLoanPayment(UserLoan $loan): float
+    public function getLoanPayment(UserLoan $loan): float
     {
         $total_left = $loan->total - $loan->total_paid;
 
-        if ($loan->instalment - 1 === $loan->total_instalment) {
+        if ($loan->instalment - 1 === $loan->total_instalment || $total_left === 0.0) {
             return $total_left;
+        }
+
+        if ($loan->instalment === $loan->total_instalment) {
+            return 0.0;
         }
 
         return round($total_left / ($loan->total_instalment - $loan->instalment), 2);

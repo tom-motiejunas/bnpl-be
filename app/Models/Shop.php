@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Eloquent;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -16,6 +17,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Shop extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'shop_id',
         'api_key',
