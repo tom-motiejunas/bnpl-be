@@ -11,7 +11,7 @@ Route::controller(ApiAuthController::class)
     ->group(static function () {
         Route::post('/sign-up', 'signup');
         Route::post('/log-in', 'login');
-        Route::post('/logout', 'logout')->middleware('auth:api');
+        Route::post('/log-out', 'logout')->middleware('auth:api');
     });
 
 Route::controller(OpenCartController::class)

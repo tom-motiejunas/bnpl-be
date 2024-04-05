@@ -2,14 +2,11 @@
 
 namespace App\Models;
 
-use Eloquent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * Shop
- *
- * @mixin Eloquent
  *
  * @property string $shop_id,
  * @property string $api_key,

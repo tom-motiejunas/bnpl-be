@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use DateTime;
-use Eloquent;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,8 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * User
- *
- * @mixin Eloquent
  *
  * @property int $user_id
  * @property string $order_id,

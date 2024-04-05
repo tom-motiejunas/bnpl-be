@@ -31,7 +31,7 @@ class ApiAuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt($credentials) === false) {
+        if (auth('web')->attempt($credentials) === false) {
             return response()->json(['error' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
         }
         /** @var User $user */
@@ -45,10 +45,11 @@ class ApiAuthController extends Controller
     {
         /** @var User $user */
         $user = Auth::user();
-        /** @var Token $token */
-        $token = $user->token();
+        /** @var Token[] $tokens */
+        $tokens = $user->tokens()->pluck('id');
 
-        $token->revoke();
+        Token::whereIn('id', $tokens)->update(['revoked' => true]);
+
         $response = ['message' => 'You have been successfully logged out!'];
 
         return response()->json($response);
