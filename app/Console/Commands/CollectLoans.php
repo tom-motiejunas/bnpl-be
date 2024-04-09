@@ -8,14 +8,14 @@ use Laravel\Cashier\Exceptions\IncompletePayment;
 
 class CollectLoans extends Command
 {
+    protected $signature = 'app:collect-loans';
+
+    protected $description = 'Command that collects loans from users';
+
     public function __construct(protected UserLoanController $user_loan_controller)
     {
         parent::__construct();
     }
-
-    protected $signature = 'app:collect-loans';
-
-    protected $description = 'Command that collects loans from users';
 
     /**
      * @throws IncompletePayment

@@ -45,7 +45,7 @@ class ApiAuthController extends Controller
     {
         /** @var User $user */
         $user = Auth::user();
-        /** @var Token[] $tokens */
+        /** @var array<Token> $tokens */
         $tokens = $user->tokens()->pluck('id');
 
         Token::whereIn('id', $tokens)->update(['revoked' => true]);

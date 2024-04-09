@@ -33,7 +33,7 @@ class OpenCartService
         if ($data === null) {
             return null;
         }
-        $data['payments'] = ($this->getFourPaymentsFromTotal((float) $data['total']));
+        $data['payments'] = $this->getFourPaymentsFromTotal((float) $data['total']);
 
         return $data;
     }

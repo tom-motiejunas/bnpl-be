@@ -36,7 +36,7 @@ class UserLoanTest extends TestCase
 
     public function test_user_loan_test(): void
     {
-        $test_order_id = 1;
+        $test_order_id = 19;
         $test_payment_method = 'pm_card_visa';
         $response = $this
             ->postJson('/api/confirm-order', [

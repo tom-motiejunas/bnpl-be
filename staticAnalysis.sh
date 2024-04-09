@@ -5,3 +5,6 @@ echo "Running PHPStan"
 
 echo "Running Pint"
 ./vendor/bin/pint --test
+
+echo "Running PHP Insights"
+php artisan insights

@@ -28,7 +28,7 @@ class UserLoanController extends Controller
         $user = $add_user_loan_request->user();
         $order_id = $add_user_loan_request->integer('order_id');
         $shop_id = $add_user_loan_request->integer('shop_id');
-        /** @var array<string, float[]>|null $order */
+        /** @var array<string, array<float>>|null $order */
         $order = $this->openCartService->getOrderInfo($order_id, $shop_id);
 
         if ($order === null) {
@@ -72,7 +72,7 @@ class UserLoanController extends Controller
      */
     public function collectLoans(): void
     {
-        /** @var UserLoan[] $loans_to_collect */
+        /** @var array<UserLoan> $loans_to_collect */
         $loans_to_collect = UserLoan::where('next_payment', '<=', date('Y-m-d'))->get();
 
         foreach ($loans_to_collect as $loan) {

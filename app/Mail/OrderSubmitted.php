@@ -12,10 +12,9 @@ class OrderSubmitted extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /** @param array<string, array<float>> $order **/
+    /** @param array<string, array<float>> $order */
     public function __construct(public array $order)
     {
-
     }
 
     public function envelope(): Envelope
