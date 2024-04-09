@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class OpenCartTest extends TestCase
 {
-    public function test_fourPaymentsFromTotal(): void
+    public function test_four_payments_from_total(): void
     {
         $shop = Shop::factory()->make();
         $open_cart = new OpenCartService($shop);

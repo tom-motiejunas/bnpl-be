@@ -22,14 +22,18 @@ class UserLoanController extends Controller
     /**
      * @throws IncompletePayment
      */
-    public function store(AddUserLoanRequest $add_user_loan_request): JsonResponse
+    public function store(AddUserLoanRequest $add_user_loan_request): ?JsonResponse
     {
         /** @var User $user */
         $user = $add_user_loan_request->user();
         $order_id = $add_user_loan_request->integer('order_id');
         $shop_id = $add_user_loan_request->integer('shop_id');
-        /** @var array<string, float[]> $order */
+        /** @var array<string, float[]>|null $order */
         $order = $this->openCartService->getOrderInfo($order_id, $shop_id);
+
+        if ($order === null) {
+            return response()->json(null, Response::HTTP_NOT_FOUND);
+        }
         $first_payment = (int) $order['payments'][0];
 
         $user->charge($first_payment * 100, (string) $add_user_loan_request->string('payment_method_id'), [
@@ -50,7 +54,7 @@ class UserLoanController extends Controller
         Mail::to($user)->send(new OrderSubmitted($order));
         Mail::to($user)->send(new PaymentMade($created_user_loan, $order['payments']));
 
-        return response()->json(['data' => $new_user_loan, 'response' => 'success']);
+        return response()->json(['data' => $new_user_loan, 'response' => Response::HTTP_OK]);
     }
 
     public function isConfirmed(int $order_id): JsonResponse

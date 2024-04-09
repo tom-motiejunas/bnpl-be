@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class UserLoanTest extends TestCase
 {
-    public function test_getLoanPayment(): void
+    public function test_get_loan_payment(): void
     {
         $shop = Shop::factory()->make();
         $open_cart = new OpenCartService($shop);

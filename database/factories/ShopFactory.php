@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Models\Shop;
+use Crypt;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,8 +19,8 @@ class ShopFactory extends Factory
     public function definition(): array
     {
         return [
-            'shop_id' => fake()->randomDigit(),
-            'api_key' => fake()->regexify('[A-Za-z0-9]{50}'),
+            'id' => fake()->randomDigit(),
+            'api_key' => Crypt::encrypt(env('OPEN_CART_TEST_API_KEY')),
             'domain' => fake()->domainName(),
         ];
     }
