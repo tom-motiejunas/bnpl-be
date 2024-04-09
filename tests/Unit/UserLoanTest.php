@@ -10,10 +10,18 @@ use PHPUnit\Framework\TestCase;
 
 class UserLoanTest extends TestCase
 {
+    protected Shop $shop;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->shop = Shop::factory()->make();
+    }
+
     public function test_get_loan_payment(): void
     {
-        $shop = Shop::factory()->make();
-        $open_cart = new OpenCartService($shop);
+        $open_cart = new OpenCartService($this->shop);
         $user_loan_controller = new UserLoanController($open_cart);
         $user_loan = UserLoan::factory()->make([
             'user_id' => 1,

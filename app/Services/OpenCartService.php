@@ -28,8 +28,11 @@ class OpenCartService
         $api_key = Crypt::decrypt($shop->api_key);
         $response = Http::get('http://172.26.0.1/index.php?bnpl_key='.$api_key.'&route=api/custom.products&order_id='.$order_id);
 
-        /** @var array<string, float|string|int> $data */
+        /** @var array<string, float|string|int>|null $data */
         $data = $response->json();
+        if ($data === null) {
+            return null;
+        }
         $data['payments'] = ($this->getFourPaymentsFromTotal((float) $data['total']));
 
         return $data;

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\User\AddPaymentMethodRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserPaymentController extends Controller
 {
@@ -22,6 +23,6 @@ class UserPaymentController extends Controller
         $user = $add_payment_method_request->user();
         $user->addPaymentMethod($add_payment_method_request->string('paymentMethodIdentifier'));
 
-        return response()->json('success');
+        return response()->json('success', Response::HTTP_CREATED);
     }
 }
