@@ -51,7 +51,7 @@ class UserLoanTest extends TestCase
         $payment = $user_loan_controller->getLoanPayment($user_loan);
         $payment_2 = $user_loan_controller->getLoanPayment($user_loan_2);
 
-        $this->assertEquals(25.00, $payment);
-        $this->assertEquals(35.07, $payment_2);
+        $this->assertSame(25.00, $payment);
+        $this->assertSame(35.07, $payment_2);
     }
 }

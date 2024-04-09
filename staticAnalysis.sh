@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 
 echo "Running PHPStan"
-./vendor/bin/phpstan analyse --memory-limit 1G
+php ./vendor/bin/phpstan analyse --memory-limit 1G
 
 echo "Running Pint"
-./vendor/bin/pint --test
+php ./vendor/bin/pint --test
 
 echo "Running PHP Insights"
 php artisan insights
+
+echo "Running enlightn"
+php artisan enlightn
