@@ -33,6 +33,10 @@ class UserPaymentTest extends TestCase
         ]);
         $response_get_all = $this->get('/api/get-payments');
 
+        $response_removed = $this->delete('/api/remove-payment', [
+            'paymentMethodIdentifier' => $response_get_all->json()[0]['id']]);
+        $response_get_all_2 = $this->get('/api/get-payments');
+
         $response_added->assertStatus(Response::HTTP_CREATED);
         $response_get_all->assertStatus(Response::HTTP_OK)->assertJsonStructure([
             '*' => [
@@ -42,5 +46,7 @@ class UserPaymentTest extends TestCase
                 'customer',
             ],
         ]);
+        $response_removed->assertNoContent();
+        $response_get_all_2->assertJsonCount(0);
     }
 }

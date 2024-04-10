@@ -25,6 +25,7 @@ Route::controller(UserPaymentController::class)
     ->group(static function () {
         Route::get('/get-payments', 'index');
         Route::post('/add-payment', 'store');
+        Route::delete('/remove-payment', 'destroy');
     });
 
 Route::controller(UserLoanController::class)
