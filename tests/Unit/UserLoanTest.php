@@ -10,48 +10,53 @@ use PHPUnit\Framework\TestCase;
 
 class UserLoanTest extends TestCase
 {
-    protected Shop $shop;
+    protected UserLoanController $user_loan_controller;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->shop = Shop::factory()->make();
+        $shop = Shop::factory()->make();
+        $open_cart = new OpenCartService($shop);
+        $this->user_loan_controller = new UserLoanController($open_cart);
     }
 
-    public function test_get_loan_payment(): void
+    /**
+     * @dataProvider userLoanDataProvider
+     * @param array<string, string> $user_loan_data
+     * @param float $expected_results
+     * @return void
+     */
+    public function test_get_loan_payment(array $user_loan_data, float $expected_results): void
     {
-        $open_cart = new OpenCartService($this->shop);
-        $user_loan_controller = new UserLoanController($open_cart);
-        $user_loan = UserLoan::factory()->make([
-            'user_id' => 1,
-            'order_id' => 1,
-            'last_payment' => now(),
-            'next_payment' => now(),
-            'amount' => 100,
-            'total' => 100,
-            'total_paid' => 0,
-            'instalment' => 0,
-            'total_instalment' => 4,
-            'payment_method_id' => 1,
-        ]);
-        $user_loan_2 = UserLoan::factory()->make([
-            'user_id' => 1,
-            'order_id' => 1,
-            'last_payment' => now(),
-            'next_payment' => now(),
-            'amount' => 100,
-            'total' => 110.07,
-            'total_paid' => 75,
-            'instalment' => 3,
-            'total_instalment' => 4,
-            'payment_method_id' => 1,
-        ]);
+        $user_loan = UserLoan::factory()->make($user_loan_data);
+        $payment = $this->user_loan_controller->getLoanPayment($user_loan);
+        $this->assertSame($expected_results, $payment);
+    }
 
-        $payment = $user_loan_controller->getLoanPayment($user_loan);
-        $payment_2 = $user_loan_controller->getLoanPayment($user_loan_2);
-
-        $this->assertSame(25.00, $payment);
-        $this->assertSame(35.07, $payment_2);
+    public static function userLoanDataProvider(): array
+    {
+        return [
+            [['user_id' => 1,
+                'order_id' => 1,
+                'last_payment' => now(),
+                'next_payment' => now(),
+                'amount' => 100,
+                'total' => 100,
+                'total_paid' => 0,
+                'instalment' => 0,
+                'total_instalment' => 4,
+                'payment_method_id' => 1,], 25.00],
+            [['user_id' => 1,
+                'order_id' => 1,
+                'last_payment' => now(),
+                'next_payment' => now(),
+                'amount' => 100,
+                'total' => 110.07,
+                'total_paid' => 75,
+                'instalment' => 3,
+                'total_instalment' => 4,
+                'payment_method_id' => 1,], 35.07]
+        ];
     }
 }

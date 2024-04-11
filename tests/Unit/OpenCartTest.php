@@ -8,16 +8,27 @@ use PHPUnit\Framework\TestCase;
 
 class OpenCartTest extends TestCase
 {
-    public function test_four_payments_from_total(): void
+    /**
+     * @dataProvider totalPaymentDataProvider
+     * @param float $total
+     * @param float[] $expected_result
+     * @return void
+     */
+    public function test_four_payments_from_total(float $total,array $expected_result): void
     {
         $shop = Shop::factory()->make();
         $open_cart = new OpenCartService($shop);
-        $payments = $open_cart->getFourPaymentsFromTotal(100);
-        $payments_2 = $open_cart->getFourPaymentsFromTotal(107.53);
-        $payments_3 = $open_cart->getFourPaymentsFromTotal(0);
+        $payments = $open_cart->getFourPaymentsFromTotal($total);
 
-        $this->assertEqualsCanonicalizing([25, 25, 25, 25], $payments);
-        $this->assertEqualsCanonicalizing([26.88, 26.88, 26.88, 26.89], $payments_2);
-        $this->assertEqualsCanonicalizing([0, 0, 0, 0], $payments_3);
+        $this->assertEqualsCanonicalizing($expected_result, $payments);
+    }
+
+    public static function totalPaymentDataProvider(): array
+    {
+        return [
+            [100, [25, 25, 25, 25]],
+            [107.53, [26.88, 26.88, 26.88, 26.89]],
+            [0, [0, 0, 0, 0]],
+        ];
     }
 }
